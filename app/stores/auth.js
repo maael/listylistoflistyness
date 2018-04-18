@@ -13,12 +13,15 @@ export default class AuthStore {
 
   prepare = () => {
     this.load()
-    if (this.token) this.rootStore.characterStore.load()
+    if (this.token) {
+      this.rootStore.characterStore.load()
+      this.rootStore.trackedStore.load()
+    }
   }
 
-  save ({ token, user }) {
-    this.token = token
-    this.user = user
+  save ({ token, user } = {}) {
+    if (token) this.token = token
+    if (user) this.user = user
     localStorage.setItem('token', this.token)
     localStorage.setItem('user', JSON.stringify(this.user))
   }
@@ -33,6 +36,17 @@ export default class AuthStore {
   load () {
     this.token = localStorage.getItem('token')
     this.user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user'))
+    this.refreshUser()
+  }
+
+  refreshUser () {
+    axios.get('/auth/refresh/')
+      .then(({ status, data }) => {
+        if (status === 200) {
+          this.user = data
+          this.save()
+        }
+      })
   }
 
   @action.bound

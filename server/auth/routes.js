@@ -44,6 +44,17 @@ router.get('/logout', (req, res) => {
   res.json({ result: 'ok' })
 })
 
+router.get('/refresh', (req, res) => {
+  if (req.user) {
+    User.findById(req.user._id, (err, user) => {
+      if (err) return res.status(500).json({ err: err.message, user: req.user })
+      res.json(user)
+    })
+  } else {
+    res.status(400).json({ err: 'No user' })
+  }
+})
+
 /* Battle.net */
 
 router.get('/bnet', (req, res) => {

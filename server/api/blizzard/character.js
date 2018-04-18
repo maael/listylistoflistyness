@@ -21,12 +21,10 @@ function embellishList (origin, data) {
 
 router.get('/', (req, res) => {
   const { user } = req
-  console.log('got user', user)
   if (user && user.battlenet && user.battlenet.length) {
     const origin = 'eu'
     bliz.account.wow({ access_token: user.battlenet[0].token, origin })
       .then(({ data }) => {
-        console.log('returning', embellishList(origin, data))
         res.send(embellishList(origin, data))
       })
       .catch(handleError(res))

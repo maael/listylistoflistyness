@@ -9,9 +9,13 @@ module.exports = (folder = 'cache', defaultBase = '', forceBase = false) => (url
   access(filePath, constants.R_OK, (err) => {
     if (err) {
       const ws = createWriteStream(filePath)
-      const proxiedReq = request(url)
-      proxiedReq.pipe(ws)
-      proxiedReq.pipe(res)
+      try {
+        const proxiedReq = request(url)
+        proxiedReq.pipe(ws)
+        proxiedReq.pipe(res)
+      } catch (e) {
+        res.status(500).send({ err: e.message })
+      }
     } else {
       createReadStream(filePath).pipe(res)
     }

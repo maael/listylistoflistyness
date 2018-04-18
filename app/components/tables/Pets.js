@@ -21,6 +21,8 @@ import {
 import debounce from 'lodash.debounce'
 import iconFormatter from '../../lib/iconFormatter'
 import CollectedProvider from './providers/collected'
+import PetTypeProvider from './providers/petType'
+import createTrackedProvider from './providers/tracked'
 import createIdLinkProvider from './providers/idLink'
 import CollectedTogglePlugin from './plugins/CollectedToggle'
 import TrackedTogglePlugin from './plugins/TrackedToggle'
@@ -36,7 +38,9 @@ const IconTypeProvider = props => (
 
 const IdLinkTypeProvider = createIdLinkProvider('npc')
 
-@inject('petStore') @observer
+@inject('petStore')
+@inject('trackedStore')
+@observer
 class PetsTable extends React.Component {
   state = {
     value: ''
@@ -51,11 +55,14 @@ class PetsTable extends React.Component {
         { name: 'name', title: 'Name' },
         { name: 'family', title: 'Family' },
         { name: 'creatureId', title: 'Link' },
-        { name: 'collected', title: 'Collected' }
+        { name: 'collected', title: 'Collected' },
+        { name: 'tracked', title: 'Tracked' }
       ],
       iconColumns: [ 'icon' ],
       idLinkColumns: [ 'creatureId' ],
       collectedColumns: [ 'collected' ],
+      trackedColumns: [ 'tracked' ],
+      petTypeColumns: [ 'family' ],
       defaultSorting: [{ columnName: 'name', direction: 'asc' }],
       sortingStateColumnExtensions: [{ columnName: 'icon', sortingEnabled: false }],
       rows: []
@@ -78,8 +85,9 @@ class PetsTable extends React.Component {
   }, 300)
 
   render () {
-    const { rows, columns, iconColumns, idLinkColumns, collectedColumns, defaultSorting, sortingStateColumnExtensions, value } = this.state
-    const { petStore } = this.props
+    const { rows, columns, iconColumns, idLinkColumns, collectedColumns, trackedColumns, petTypeColumns, defaultSorting, sortingStateColumnExtensions, value } = this.state
+    const { petStore, trackedStore } = this.props
+    const TrackedProvider = createTrackedProvider('pet', trackedStore)
 
     return (
       <Paper className='pet-table'>
@@ -96,15 +104,12 @@ class PetsTable extends React.Component {
           rows={toJS(petStore.filtered)}
           columns={columns}
         >
-          <IconTypeProvider
-            for={iconColumns}
-          />
-          <IdLinkTypeProvider
-            for={idLinkColumns}
-          />
-          <CollectedProvider
-            for={collectedColumns}
-          />
+          <IconTypeProvider for={iconColumns} />
+          <IdLinkTypeProvider for={idLinkColumns} />
+          <CollectedProvider for={collectedColumns} />
+          <TrackedProvider for={trackedColumns} />
+          <PetTypeProvider for={petTypeColumns} />
+
           <SortingState
             defaultSorting={defaultSorting}
             columnExtensions={sortingStateColumnExtensions}

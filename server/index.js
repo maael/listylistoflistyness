@@ -1,5 +1,5 @@
 const { PROTOCOL, HOST, HTTPS_KEY_PATH, HTTPS_CERT_PATH } = require('dotenv-extended').load()
-const fs = require('fs')
+const { readFileSync } = require('fs')
 const https = require('https')
 const express = require('express')
 const compression = require('compression');
@@ -19,8 +19,8 @@ const handleNextRequest = app.getRequestHandler()
 mobxReact.useStaticRendering(true)
 
 const sslOptions = {
-  key: fs.readFileSync(HTTPS_KEY_PATH),
-  cert: fs.readFileSync(HTTPS_CERT_PATH)
+  key: readFileSync(HTTPS_KEY_PATH),
+  cert: readFileSync(HTTPS_CERT_PATH)
 }
 
 db.connection.on('error', (err) => {
@@ -39,6 +39,7 @@ db.connection.once('open', () => {
 
     server
       .use('/api', api)
+      .use('/public', express.static('public'))
       .use(redirectUnauthorizedRoutesToIndex)
       .get('*', handleNextRequest)
 

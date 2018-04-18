@@ -1,5 +1,5 @@
 import React from 'react'
-import { toJS } from 'mobx'
+import { toJS, reaction } from 'mobx'
 import { inject, observer } from 'mobx-react'
 import Paper from 'material-ui/Paper'
 import {
@@ -21,6 +21,7 @@ import {
 import debounce from 'lodash.debounce'
 import iconFormatter from '../../lib/iconFormatter'
 import CollectedProvider from './providers/collected'
+import createTrackedProvider from './providers/tracked'
 import createIdLinkProvider from './providers/idLink'
 import CollectedTogglePlugin from './plugins/CollectedToggle'
 import TrackedTogglePlugin from './plugins/TrackedToggle'
@@ -37,6 +38,8 @@ const IconTypeProvider = props => (
 const IdLinkTypeProvider = createIdLinkProvider('item')
 
 @inject('mountStore')
+@inject('trackedStore')
+@inject('authStore')
 @observer
 class MountsTable extends React.Component {
   state = {
@@ -51,11 +54,13 @@ class MountsTable extends React.Component {
         { name: 'icon', title: '' },
         { name: 'name', title: 'Name' },
         { name: 'itemId', title: 'Link' },
-        { name: 'collected', title: 'Collected' }
+        { name: 'collected', title: 'Collected' },
+        { name: 'tracked', title: 'Tracked' }
       ],
       iconColumns: [ 'icon' ],
       idLinkColumns: [ 'itemId' ],
       collectedColumns: [ 'collected' ],
+      trackedColumns: [ 'tracked' ],
       defaultSorting: [{ columnName: 'name', direction: 'asc' }],
       sortingStateColumnExtensions: [{ columnName: 'icon', sortingEnabled: false }],
       rows: []
@@ -78,9 +83,9 @@ class MountsTable extends React.Component {
   }, 300)
 
   render () {
-    const { rows, columns, iconColumns, idLinkColumns, collectedColumns, defaultSorting, sortingStateColumnExtensions, value } = this.state
-    const { mountStore } = this.props
-
+    const { rows, columns, iconColumns, idLinkColumns, collectedColumns, trackedColumns, defaultSorting, sortingStateColumnExtensions, value } = this.state
+    const { mountStore, trackedStore, trackable } = this.props
+    const TrackedProvider = createTrackedProvider('mount', trackedStore)
     return (
       <Paper className='mount-table'>
         <style jsx global>{`
@@ -96,15 +101,10 @@ class MountsTable extends React.Component {
           rows={toJS(mountStore.filtered)}
           columns={columns}
         >
-          <IconTypeProvider
-            for={iconColumns}
-          />
-          <IdLinkTypeProvider
-            for={idLinkColumns}
-          />
-          <CollectedProvider
-            for={collectedColumns}
-          />
+          <IconTypeProvider for={iconColumns} />
+          <IdLinkTypeProvider for={idLinkColumns} />
+          <CollectedProvider for={collectedColumns} />
+          <TrackedProvider for={trackedColumns} />
 
           <SortingState
             defaultSorting={defaultSorting}

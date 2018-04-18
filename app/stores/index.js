@@ -4,12 +4,13 @@ import DataStore from './data'
 import AuthStore from './auth'
 import CharacterStore from './character'
 import CollectedStore from './collected'
+import TrackedStore from './tracked'
 
 let store = null
 
 class RootStore {
   constructor (isServer) {
-    this.stores = [AuthStore, MountStore, PetStore, DataStore, CharacterStore, CollectedStore].map((StoreClass) => {
+    this.stores = [AuthStore, MountStore, PetStore, DataStore, CharacterStore, CollectedStore, TrackedStore].map((StoreClass) => {
       const storeName = `${StoreClass.name.charAt(0).toLowerCase()}${StoreClass.name.slice(1)}`
       this[storeName] = new StoreClass(this, isServer)
       return storeName

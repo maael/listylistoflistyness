@@ -26,6 +26,13 @@ export default class PetStore {
     }).catch(console.error)
   }
 
+  match (item, subField) {
+    return (toCompare) => {
+      const comparison = subField ? toCompare[subField] : toCompare
+      return item.creatureId === comparison.creatureId
+    }
+  }
+
   @action.bound
   filter (newFilter) {
     this.activeFilter = Object.assign({}, this.activeFilter, newFilter)
@@ -40,7 +47,9 @@ export default class PetStore {
       if (!item.name.toLowerCase().includes(this.activeFilter.search.toLowerCase())) return result
       const collected = (this.rootStore.collectedStore.pets.collected.some(({ creatureId }) => creatureId === item.creatureId))
       if (this.activeFilter.collected && !collected) return result
-      return result.concat(Object.assign({}, item, { collected }))
+      const tracked = this.rootStore.trackedStore.pets.some(this.match(item, 'details'))
+      if (this.activeFilter.tracked && !tracked) return result
+      return result.concat(Object.assign({}, item, { collected, tracked }))
     }, [])
   }
 }
