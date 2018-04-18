@@ -1,7 +1,7 @@
 const config = require('dotenv-extended').load()
 const express = require('express')
 const { getApiInstance, handleError } = require('./util')
-const bliz = getApiInstance()
+const bliz = getApiInstance({ noCache: true })
 
 const router = express.Router()
 

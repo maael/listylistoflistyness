@@ -7,13 +7,17 @@ const Cache = require('./cache')
 const store = new Cache()
 
 function getApiInstance (opts = {}) {
-  const cache = setupCache({
-    maxAge: Number(opts.maxAge || BLIZ_CACHE_MAX_AGE),
-    store,
-    debug: DEBUG_SERVER_CACHE,
-    exclude: { query: false }
-  })
-  return bliz.initialize({ apikey: BLIZZARD_KEY }, { adapter: cache.adapter })
+  if (opts.noCache) {
+    return bliz.initialize({ apikey: BLIZZARD_KEY })
+  } else {
+    const cache = setupCache({
+      maxAge: Number(opts.maxAge || BLIZ_CACHE_MAX_AGE),
+      store,
+      debug: DEBUG_SERVER_CACHE,
+      exclude: Object.assign({ query: false }, opts.exclude)
+    })
+    return bliz.initialize({ apikey: BLIZZARD_KEY }, { adapter: cache.adapter })
+  }
 }
 
 module.exports = {

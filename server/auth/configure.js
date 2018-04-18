@@ -1,4 +1,4 @@
-const { PROTOCOL, HOST, PORT, BLIZZARD_KEY, BLIZZARD_SECRET } = require('dotenv-extended').load()
+const { BLIZZARD_CALLBACK_URL, PROTOCOL, HOST, PORT, BLIZZARD_KEY, BLIZZARD_SECRET } = require('dotenv-extended').load()
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
 const BnetStrategy = require('passport-bnet').Strategy
@@ -6,10 +6,14 @@ const User = require('./model')
 
 module.exports = function configure () {
   /* Battle.net */
+  const callbackURL = BLIZZARD_CALLBACK_URL
+    ? BLIZZARD_CALLBACK_URL
+    : `${PROTOCOL}://${HOST}:${PORT}/auth/bnet/callback`
+
   passport.use(new BnetStrategy({
     clientID: BLIZZARD_KEY,
     clientSecret: BLIZZARD_SECRET,
-    callbackURL: `${PROTOCOL}://${HOST}:${PORT}/auth/bnet/callback`,
+    callbackURL,
     region: 'eu',
     scope: [ 'wow.profile' ],
     passReqToCallback: true
