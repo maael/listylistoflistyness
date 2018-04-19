@@ -8,6 +8,8 @@ export default class MountStore {
   @observable activeFilter = { search: '', collected: false, tracked: false }
   @observable pageSize = 20
 
+  endpoint = '/api/blizzard/mount'
+
   constructor (rootStore, isServer) {
     if (!isServer) this.load()
     this.rootStore = rootStore
@@ -18,7 +20,7 @@ export default class MountStore {
   }
 
   load () {
-    axios('/api/blizzard/mount').then(({ data, status }) => {
+    axios(this.endpoint).then(({ data, status }) => {
       if (status === 200) {
         this.mounts = data.mounts
         this.loaded = true

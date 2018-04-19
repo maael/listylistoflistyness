@@ -10,12 +10,10 @@ const userSchema = mongoose.Schema({
 userSchema.plugin(passportLocalMongoose)
 
 userSchema.statics.associateBattleNet = function (user, profile, cb) {
-  console.log('ASSOCIATING', user._id, profile)
   this.findByIdAndUpdate(user._id, { $push: { battlenet: profile } }, { lean: true, new: true }, cb)
 }
 
 userSchema.statics.revokeBattlenet = function (userId, battlenetId, cb) {
-  console.log('removing', userId, battlenetId)
   this.findByIdAndUpdate(userId, { $pull: { battlenet: { id: Number(battlenetId) } } }, { lean: true, new: true }, cb)
 }
 

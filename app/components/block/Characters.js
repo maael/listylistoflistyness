@@ -12,7 +12,7 @@ class CharactersBlock extends React.Component {
       <Grid container justify='center'>
         <Grid item xs={12}>
           <Grid container justify='center' spacing={24}>
-            {characterStore.characters.map((c) => <CharacterCard key={c.thumbnail} character={c} />)}
+            {characterStore.characters.map((c) => <CharacterCard key={c.thumbnail} character={c} onClick={() => characterStore.select(c)} />)}
           </Grid>
         </Grid>
       </Grid>

@@ -6,6 +6,7 @@ import Paper from 'material-ui/Paper'
 import Tabs, { Tab } from 'material-ui/Tabs'
 import MountTable from '../tables/Mounts'
 import PetTable from '../tables/Pets'
+import ReputationTable from '../tables/Reputation'
 
 const styles = theme => ({
   root: theme.mixins.gutters({
@@ -45,10 +46,16 @@ class TrackablesBlock extends React.Component {
             >
               <Tab label='MOUNTS' />
               <Tab label='PETS' />
+              <Tab label='REPUTATION' />
+              <Tab label='PROGRESSION' />
+              <Tab label='FEED' />
             </Tabs>
             <div className={classes.internal}>
               {value === 0 && <MountTable />}
               {value === 1 && <PetTable />}
+              {value === 2 && <ReputationTable />}
+              {value === 3 && <div>Progression</div>}
+              {value === 4 && <div>Feed</div>}
             </div>
           </Paper>
         </Grid>

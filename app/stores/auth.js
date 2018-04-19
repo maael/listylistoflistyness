@@ -6,6 +6,8 @@ export default class AuthStore {
   @observable token
   @observable user
 
+  endpoint = '/auth/'
+
   constructor (rootStore, isServer) {
     if (!isServer) this.prepare()
     this.rootStore = rootStore
@@ -16,6 +18,7 @@ export default class AuthStore {
     if (this.token) {
       this.rootStore.characterStore.load()
       this.rootStore.trackedStore.load()
+      this.rootStore.settingsStore.load()
     }
   }
 
@@ -40,7 +43,7 @@ export default class AuthStore {
   }
 
   refreshUser () {
-    axios.get('/auth/refresh/')
+    axios.get(`${this.endpoint}refresh/`)
       .then(({ status, data }) => {
         if (status === 200) {
           this.user = data
@@ -51,7 +54,7 @@ export default class AuthStore {
 
   @action.bound
   login (username, password) {
-    axios.post('/auth/login', { username, password })
+    axios.post(`${this.endpoint}login`, { username, password })
       .then(({ status, data }) => {
         if (status === 200) {
           this.save(data)
@@ -65,7 +68,7 @@ export default class AuthStore {
 
   @action.bound
   register (username, password) {
-    axios.post('/auth/register', { username, password })
+    axios.post(`${this.endpoint}register`, { username, password })
       .then(({ status, data }) => {
         if (status === 200) {
           this.save(data)
@@ -78,7 +81,7 @@ export default class AuthStore {
 
   @action.bound
   revoke (battlenetId) {
-    axios.delete(`/auth/revoke/${this.user._id}/${battlenetId}`)
+    axios.delete(`${this.endpoint}revoke/${this.user._id}/${battlenetId}`)
       .then(({ status, data }) => {
         if (status === 200) {
           this.save(data)
@@ -88,7 +91,7 @@ export default class AuthStore {
 
   @action.bound
   logout () {
-    axios.get('/auth/logout')
+    axios.get(`${this.endpoint}logout`)
       .then(({ status }) => {
         if (status === 200) {
           this.reset()

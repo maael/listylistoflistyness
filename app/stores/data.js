@@ -5,6 +5,8 @@ export default class DataStore {
   @observable loaded = false
   @observable data = { realms: [] }
 
+  endpoint = '/api/blizzard/data/realm'
+
   constructor (rootStore, isServer) {
     if (!isServer) this.load()
   }
@@ -18,7 +20,7 @@ export default class DataStore {
   }
 
   loadRealms () {
-    axios.get('/api/blizzard/data/realm')
+    axios.get(this.endpoint)
       .then(({ data }) => {
         this.data.realms = data.realms
         this.loaded = true

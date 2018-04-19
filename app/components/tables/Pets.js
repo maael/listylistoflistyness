@@ -64,8 +64,7 @@ class PetsTable extends React.Component {
       trackedColumns: [ 'tracked' ],
       petTypeColumns: [ 'family' ],
       defaultSorting: [{ columnName: 'name', direction: 'asc' }],
-      sortingStateColumnExtensions: [{ columnName: 'icon', sortingEnabled: false }],
-      rows: []
+      sortingStateColumnExtensions: [{ columnName: 'icon', sortingEnabled: false }]
     }
   }
 
@@ -85,7 +84,7 @@ class PetsTable extends React.Component {
   }, 300)
 
   render () {
-    const { rows, columns, iconColumns, idLinkColumns, collectedColumns, trackedColumns, petTypeColumns, defaultSorting, sortingStateColumnExtensions, value } = this.state
+    const { columns, iconColumns, idLinkColumns, collectedColumns, trackedColumns, petTypeColumns, defaultSorting, sortingStateColumnExtensions, value } = this.state
     const { petStore, trackedStore } = this.props
     const TrackedProvider = createTrackedProvider('pet', trackedStore)
 

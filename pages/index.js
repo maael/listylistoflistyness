@@ -6,8 +6,7 @@ import HeaderBar from '../app/components/HeaderBar'
 import TrackablesBlock from '../app/components/block/Trackables'
 import BattleNetBlock from '../app/components/block/Battlenet'
 import CharactersBlock from '../app/components/block/Characters'
-
-import AuthVisible from '../app/components/hoc/AuthVisible'
+import AuthVisible from '../app/components/visibility/Auth'
 
 class Page extends React.Component {
   static getInitialProps ({ req }) {

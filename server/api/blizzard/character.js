@@ -36,7 +36,7 @@ router.get('/', (req, res) => {
 router.get('/:realm/:name', (req, res) => {
   const { realm, name } = req.params
   const origin = 'eu'
-  bliz.wow.character(['profile', 'pets', 'mounts', 'professions', 'titles', 'guild', 'hunterPets'], { realm, name, origin })
+  bliz.wow.character(['profile', 'pets', 'mounts', 'professions', 'titles', 'guild', 'hunterPets', 'progression', 'reputation'], { realm, name, origin })
     .then(({ data }) => {
       res.send(embellishData(origin, data))
     })

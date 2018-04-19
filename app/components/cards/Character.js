@@ -8,7 +8,8 @@ import Typography from 'material-ui/Typography'
 
 const styles = {
   card: {
-    minWidth: 200
+    minWidth: 200,
+    cursor: 'pointer'
   },
   title: {
     marginBottom: 16,
@@ -20,11 +21,26 @@ const styles = {
 }
 
 class CharacterCard extends React.Component {
+  state = {
+    raised: false
+  }
+
+  onMouseRaised = raised => () => {
+    this.setState({ raised })
+  }
+
   render () {
-    const { classes, character } = this.props
+    const { classes, character, onClick } = this.props
+    const { raised } = this.state
     return character ? (
       <Grid item xs={2}>
-        <Card className={classes.card}>
+        <Card
+          className={classes.card}
+          onMouseEnter={this.onMouseRaised(true)}
+          onMouseLeave={this.onMouseRaised(false)}
+          onClick={onClick}
+          raised={raised}
+        >
           <CardMedia
             className={classes.media}
             image={character.insetFull}

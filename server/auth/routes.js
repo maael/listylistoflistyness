@@ -58,7 +58,6 @@ router.get('/refresh', (req, res) => {
 /* Battle.net */
 
 router.get('/bnet', (req, res) => {
-  console.log('hit bnet')
   passport.authorize('bnet', (err, user, info) => {
     console.log('bnet auth with', err, user, info)
   })(req, res)

@@ -19,26 +19,14 @@ import {
   PagingPanel
 } from '@devexpress/dx-react-grid-material-ui'
 import debounce from 'lodash.debounce'
-import iconFormatter from '../../lib/iconFormatter'
 import CollectedProvider from './providers/collected'
+import ProgressProvider from './providers/progress'
 import createTrackedProvider from './providers/tracked'
-import createIdLinkProvider from './providers/idLink'
 import CollectedTogglePlugin from './plugins/CollectedToggle'
 import TrackedTogglePlugin from './plugins/TrackedToggle'
 
-const IconFormatter = ({ value }) => <img src={iconFormatter(value)} />
-
-const IconTypeProvider = props => (
-  <DataTypeProvider
-    formatterComponent={IconFormatter}
-    {...props}
-  />
-)
-
-const IdLinkTypeProvider = createIdLinkProvider('item')
-
-@inject('mountStore')
-@inject('trackedStore')
+@inject('collectedStore')
+@inject('characterStore')
 @inject('authStore')
 @observer
 class MountsTable extends React.Component {
@@ -51,69 +39,57 @@ class MountsTable extends React.Component {
 
     this.state = {
       columns: [
-        { name: 'icon', title: '' },
         { name: 'name', title: 'Name' },
-        { name: 'itemId', title: 'Link' },
+        { name: 'standingName', title: 'Standing' },
+        { name: 'value', title: 'Progress' },
         { name: 'collected', title: 'Collected' },
         { name: 'tracked', title: 'Tracked' }
       ],
-      iconColumns: [ 'icon' ],
-      idLinkColumns: [ 'itemId' ],
       collectedColumns: [ 'collected' ],
       trackedColumns: [ 'tracked' ],
-      defaultSorting: [{ columnName: 'name', direction: 'asc' }],
-      sortingStateColumnExtensions: [{ columnName: 'icon', sortingEnabled: false }]
+      progressColumns: [ 'value' ],
+      defaultSorting: [{ columnName: 'name', direction: 'asc' }]
     }
   }
 
   search = debounce((search) => {
-    const { mountStore } = this.props
-    mountStore.filter({ search })
+    console.log('searching')
   }, 300)
 
   filterCollected = debounce(({ toggled: collected }) => {
-    const { mountStore } = this.props
-    mountStore.filter({ collected })
+    console.log('filter')
   }, 300)
 
   filterTracked = debounce(({ toggled: tracked }) => {
-    const { mountStore } = this.props
-    mountStore.filter({ tracked })
+    console.log('filter')
   }, 300)
 
   render () {
-    const { columns, iconColumns, idLinkColumns, collectedColumns, trackedColumns, defaultSorting, sortingStateColumnExtensions, value } = this.state
-    const { mountStore, trackedStore, trackable } = this.props
-    const TrackedProvider = createTrackedProvider('mount', trackedStore)
+    const { columns, collectedColumns, trackedColumns, progressColumns, defaultSorting, value } = this.state
+    const { collectedStore, trackedStore, characterStore, trackable } = this.props
+    const TrackedProvider = createTrackedProvider('reputation', trackedStore)
+    const rowData = collectedStore.characterReputations && characterStore.selected
+      ? toJS(collectedStore.characterReputations[characterStore.selected] || [])
+      : []
+
     return (
-      <Paper className='mount-table'>
-        <style jsx global>{`
-          .mount-table th:first-child,
-          .mount-table tr:first-child {
-            width: 95px;
-          }
-          .mount-table th:first-child {
-            text-indent: -999px;
-          }
-        `}</style>
+      <Paper className='reputation-table'>
         <Grid
-          rows={toJS(mountStore.filtered)}
+          rows={rowData}
           columns={columns}
         >
-          <IconTypeProvider for={iconColumns} />
-          <IdLinkTypeProvider for={idLinkColumns} />
           <CollectedProvider for={collectedColumns} />
           <TrackedProvider for={trackedColumns} />
+          <ProgressProvider for={progressColumns} />
 
           <SortingState
             defaultSorting={defaultSorting}
-            columnExtensions={sortingStateColumnExtensions}
           />
           <IntegratedSorting />
           <SearchState value={value} onValueChange={this.search} />
-          <PagingState defaultCurrentPage={0} pageSize={mountStore.pageSize} />
+          <PagingState defaultCurrentPage={0} pageSize={10} />
           <IntegratedPaging />
-          <Table className='mount-table' />
+          <Table className='reputation-table' />
           <TableHeaderRow showSortingControls />
           <Toolbar />
           <CollectedTogglePlugin onClick={this.filterCollected}/>

@@ -8,6 +8,8 @@ export default class PetStore {
   @observable activeFilter = { search: '', collected: false, tracked: false }
   @observable pageSize = 20
 
+  endpoint = '/api/blizzard/pet'
+
   constructor (rootStore, isServer) {
     if (!isServer) this.load()
     this.rootStore = rootStore
@@ -18,7 +20,7 @@ export default class PetStore {
   }
 
   load () {
-    axios('/api/blizzard/pet').then(({ data, status }) => {
+    axios(this.endpoint).then(({ data, status }) => {
       if (status === 200) {
         this.pets = data.pets
         this.loaded = true
