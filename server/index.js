@@ -2,14 +2,14 @@ const { PROTOCOL, HOST, HTTPS_KEY_PATH, HTTPS_CERT_PATH } = require('dotenv-exte
 const { readFileSync } = require('fs')
 const https = require('https')
 const express = require('express')
-const compression = require('compression');
+const compression = require('compression')
 const morgan = require('morgan')
 const next = require('next')
 const mobxReact = require('mobx-react')
 const api = require('./api')
 const auth = require('./auth')
 const db = require('./lib/db')
-const { redirectUnauthorizedRoutesToIndex } = require('./auth/middleware')
+const { redirectUnauthorizedRoutesToIndex, forceUser } = require('./auth/middleware')
 const port = process.env.PORT
 
 const dev = process.env.NODE_ENV !== 'production'
@@ -41,6 +41,7 @@ db.connection.once('open', () => {
       .use('/api', api)
       .use('/public', express.static('public'))
       .use(redirectUnauthorizedRoutesToIndex)
+      .use(forceUser)
       .get('*', handleNextRequest)
 
     https.createServer(sslOptions, server).listen(port, () => {

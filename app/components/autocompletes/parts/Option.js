@@ -2,7 +2,6 @@ import React from 'react'
 import { MenuItem } from 'material-ui/Menu'
 import { ListItemIcon, ListItemText } from 'material-ui/List'
 import Avatar from 'material-ui/Avatar'
-import InboxIcon from '@material-ui/icons/MoveToInbox'
 
 export default class Option extends React.Component {
   handleClick = event => {

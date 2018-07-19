@@ -79,4 +79,3 @@ class AuthDialog extends React.Component {
 }
 
 export default withStyles(styles)(AuthDialog)
-

@@ -1,16 +1,17 @@
-import { action, observable, computed } from 'mobx'
+import { action, observable } from 'mobx'
 import axios from 'axios'
 
 export default class CollectedStore {
   @observable loaded = false
   @observable pets = { collected: [] }
   @observable mounts = { collected: [] }
-  @observable characterAchievements = {}
-  @observable characterItems = {}
-  @observable characterTitles = {}
-  @observable characterReputations = {}
-  @observable characterProgression = {}
-  @observable characterProfessions = {}
+  /* character specific */
+  @observable achievements = {}
+  @observable items = {}
+  @observable titles = {}
+  @observable reputations = {}
+  @observable progression = {}
+  @observable professions = {}
 
   endpoint = '/api/blizzard/character/'
 
@@ -26,6 +27,7 @@ export default class CollectedStore {
   }
 
   constructor (rootStore, isServer) {
+    this.rootStore = rootStore
     if (!isServer) this.load()
   }
 
@@ -36,16 +38,32 @@ export default class CollectedStore {
         const { titles, mounts, pets, reputation, progression, professions } = data
         this.mounts = mounts
         this.pets = pets
-        this.characterTitles[`${realm}-${name}`] = titles.map((title) =>
+        this.titles[`${realm}-${name}`] = titles.map((title) =>
           Object.assign({}, title, { full: title.name.replace('%s', name) })
         )
-        this.characterReputations[`${realm}-${name}`] = reputation.map((item) =>
+        this.reputations[`${realm}-${name}`] = reputation.map((item) =>
           Object.assign({}, item, this.reputationMapping[item.standing])
         )
-        this.characterProfessions[`${realm}-${name}`] = professions
-        this.characterProgression[`${realm}-${name}`] = progression
-        console.log('say what', this)
+        this.professions[`${realm}-${name}`] = professions
+        this.progression[`${realm}-${name}`] = progression
       }
     }).catch(console.error)
+  }
+
+  @action.bound
+  filterCurrentCharacter (type, filterFn = () => {}) {
+    const selectedCharacter = this.rootStore.characterStore.selected
+    const tracked = this.rootStore.characterTrackedStore.getField(type, selectedCharacter)
+    return this[type][selectedCharacter] ? this[type][selectedCharacter].reduce((items, item) => {
+      return filterFn(item, tracked) ? items.concat(item) : items
+    }, []) : []
+  }
+
+  @action.bound
+  match (type, item, subfield) {
+    return (toCompare) => {
+      const comparison = subField ? toCompare[subField] : toCompare
+      return type.id === comparison.id
+    }
   }
 }

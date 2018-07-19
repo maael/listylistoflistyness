@@ -19,7 +19,7 @@ const styles = {
 function Progress ({ classes, value, max, label, color }) {
   return (
     <div className={classes.outer}>
-      <div className={classnames(classes.inner, classes[color])} style={{ width: `${(value/max) * 100}%` }}></div>
+      <div className={classnames(classes.inner, classes[color])} style={{ width: `${(value / max) * 100}%` }} />
       <span className={classes.label}>{value}/{max}</span>
     </div>
   )

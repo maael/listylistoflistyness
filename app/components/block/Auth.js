@@ -31,10 +31,10 @@ class AuthBlock extends React.Component {
   handleClick = (e) => {
     e.preventDefault()
     document.activeElement.blur()
-    const { authStore } = this.props
+    const { authStore, redirect } = this.props
     const { value, username, password } = this.state
     const method = value === 0 ? 'login' : 'register'
-    authStore[method](username, password)
+    authStore[method](username, password, redirect)
   }
 
   onChange = prop => (e, value) => {
@@ -77,11 +77,13 @@ class AuthBlock extends React.Component {
 
 AuthBlock.propTypes = {
   classes: PropTypes.object.isRequired,
-  defaultTab: PropTypes.number
+  defaultTab: PropTypes.number,
+  redirect: PropTypes.bool
 }
 
 AuthBlock.defaultProps = {
-  defaultTab: 0
+  defaultTab: 0,
+  redirect: false
 }
 
 export default withStyles(styles)(AuthBlock)

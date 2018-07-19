@@ -37,19 +37,19 @@ class BattleNetBlock extends React.Component {
             <div className={classes.internal}>
               <List>
                 { authStore.user && authStore.user.battlenet && authStore.user.battlenet.length ? (
-                    authStore.user.battlenet.map(({ id, battletag }) => (
-                      <ListItem key={id}>
-                        <ListItemText>Account: {battletag}</ListItemText>
-                        <ListItemSecondaryAction>
-                          <IconButton aria-label='Remove' onClick={this.revoke(id)}>
-                            <DeleteIcon />
-                          </IconButton>
-                        </ListItemSecondaryAction>
-                      </ListItem>
-                    ))
-                  ) : (
-                    <ListItem><ListItemText>No Battle.net Associated</ListItemText></ListItem>
-                  )
+                  authStore.user.battlenet.map(({ id, battletag }) => (
+                    <ListItem key={id}>
+                      <ListItemText>Account: {battletag}</ListItemText>
+                      <ListItemSecondaryAction>
+                        <IconButton aria-label='Remove' onClick={this.revoke(id)}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </ListItemSecondaryAction>
+                    </ListItem>
+                  ))
+                ) : (
+                  <ListItem><ListItemText>No Battle.net Associated</ListItemText></ListItem>
+                )
                 }
               </List>
               <Button href='/auth/bnet' size='small' fullWidth variant='raised' color='primary'>Add Battlenet</Button>

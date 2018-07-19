@@ -1,4 +1,4 @@
-import { action, observable } from 'mobx'
+import { action, observable, computed } from 'mobx'
 import axios from 'axios'
 
 export default class CharacterStore {
@@ -42,5 +42,10 @@ export default class CharacterStore {
         this.loaded = true
       }
     }).catch(console.error)
+  }
+
+  @computed get selectedCharacter () {
+    const [ realm, name ] = this.selected.split('-')
+    return characters.find((char) => (char.name === name && char.realm === realm))
   }
 }

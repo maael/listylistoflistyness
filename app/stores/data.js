@@ -19,6 +19,7 @@ export default class DataStore {
     this.loadRealms()
   }
 
+  @action.bound
   loadRealms () {
     axios.get(this.endpoint)
       .then(({ data }) => {

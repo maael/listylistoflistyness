@@ -1,5 +1,5 @@
 import React from 'react'
-import { toJS, reaction } from 'mobx'
+import { toJS } from 'mobx'
 import { inject, observer } from 'mobx-react'
 import Paper from 'material-ui/Paper'
 import {
@@ -7,7 +7,6 @@ import {
   IntegratedSorting,
   PagingState,
   IntegratedPaging,
-  DataTypeProvider,
   SearchState
 } from '@devexpress/dx-react-grid'
 import {
@@ -19,19 +18,20 @@ import {
   PagingPanel
 } from '@devexpress/dx-react-grid-material-ui'
 import debounce from 'lodash.debounce'
-import CollectedProvider from './providers/collected'
 import ProgressProvider from './providers/progress'
-import createTrackedProvider from './providers/tracked'
-import CollectedTogglePlugin from './plugins/CollectedToggle'
+import createTrackedProvider from './providers/characterTracked'
 import TrackedTogglePlugin from './plugins/TrackedToggle'
 
 @inject('collectedStore')
 @inject('characterStore')
 @inject('authStore')
+@inject('characterTrackedStore')
 @observer
 class MountsTable extends React.Component {
   state = {
-    value: ''
+    value: '',
+    search: '',
+    tracked: false
   }
 
   constructor (props) {
@@ -42,10 +42,8 @@ class MountsTable extends React.Component {
         { name: 'name', title: 'Name' },
         { name: 'standingName', title: 'Standing' },
         { name: 'value', title: 'Progress' },
-        { name: 'collected', title: 'Collected' },
         { name: 'tracked', title: 'Tracked' }
       ],
-      collectedColumns: [ 'collected' ],
       trackedColumns: [ 'tracked' ],
       progressColumns: [ 'value' ],
       defaultSorting: [{ columnName: 'name', direction: 'asc' }]
@@ -53,23 +51,31 @@ class MountsTable extends React.Component {
   }
 
   search = debounce((search) => {
-    console.log('searching')
-  }, 300)
-
-  filterCollected = debounce(({ toggled: collected }) => {
-    console.log('filter')
+    this.setState({ search })
   }, 300)
 
   filterTracked = debounce(({ toggled: tracked }) => {
-    console.log('filter')
+    this.setState({ tracked })
   }, 300)
 
+  filter = ({ name, id }, trackedItems = []) => {
+    const { search, tracked } = this.state
+    let include = search ? name.toLowerCase().includes(search.toLowerCase()) : true
+    include = include && (tracked ? trackedItems.some(({ details }) => id === details.id) : true)
+    return include
+  }
+
   render () {
-    const { columns, collectedColumns, trackedColumns, progressColumns, defaultSorting, value } = this.state
-    const { collectedStore, trackedStore, characterStore, trackable } = this.props
-    const TrackedProvider = createTrackedProvider('reputation', trackedStore)
-    const rowData = collectedStore.characterReputations && characterStore.selected
-      ? toJS(collectedStore.characterReputations[characterStore.selected] || [])
+    const { columns, trackedColumns, progressColumns, defaultSorting, value } = this.state
+    const { collectedStore, characterTrackedStore, characterStore } = this.props
+    const tracked = collectedStore.reputations && characterStore.selected
+      ? toJS(collectedStore.filterCurrentCharacter('reputations', ({ id }, trackedItems) =>
+          trackedItems.some(({ details }) => id === details.id)
+        ))
+      : []
+    const TrackedProvider = createTrackedProvider('reputation', characterTrackedStore, tracked)
+    const rowData = collectedStore.reputations && characterStore.selected
+      ? toJS(collectedStore.filterCurrentCharacter('reputations', this.filter))
       : []
 
     return (
@@ -78,7 +84,6 @@ class MountsTable extends React.Component {
           rows={rowData}
           columns={columns}
         >
-          <CollectedProvider for={collectedColumns} />
           <TrackedProvider for={trackedColumns} />
           <ProgressProvider for={progressColumns} />
 
@@ -92,8 +97,7 @@ class MountsTable extends React.Component {
           <Table className='reputation-table' />
           <TableHeaderRow showSortingControls />
           <Toolbar />
-          <CollectedTogglePlugin onClick={this.filterCollected}/>
-          <TrackedTogglePlugin onClick={this.filterTracked}/>
+          <TrackedTogglePlugin onClick={this.filterTracked} />
           <SearchPanel />
           <PagingPanel />
         </Grid>

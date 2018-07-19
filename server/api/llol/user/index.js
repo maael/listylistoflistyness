@@ -8,7 +8,7 @@ router.get('/settings', (req, res) => {
   if (!user) return res.status(400).json({ err: 'Requires user' })
   Model.findById(user._id, (err, item) => {
     if (err) return res.status(500).send(err)
-    res.send(item ? item : {})
+    res.send(item || {})
   })
 })
 

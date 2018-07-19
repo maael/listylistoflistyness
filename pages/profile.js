@@ -1,7 +1,12 @@
+import React from 'react'
+import CssBaseline from 'material-ui/CssBaseline'
 import { Provider } from 'mobx-react'
 import { initStore } from '../app/stores'
+import withRoot from '../app/lib/withRoot'
+import HeaderBar from '../app/components/HeaderBar'
+import PersonalHeader from '../app/components/profile/PersonalHeader'
 
-export default class Page extends React.Component {
+class Page extends React.Component {
   static getInitialProps ({ req }) {
     const isServer = !!req
     const store = initStore(isServer)
@@ -13,6 +18,10 @@ export default class Page extends React.Component {
     this.store = initStore(props.isServer)
   }
 
+  static getDerivedStateFromProps () {
+    console.log('deriving')
+  }
+
   componentDidMount () {
     this.store.onClientLoad()
   }
@@ -21,9 +30,13 @@ export default class Page extends React.Component {
     return (
       <Provider {...this.store.getStores()}>
         <div>
-          Profile
+          <CssBaseline />
+          <HeaderBar />
+          <PersonalHeader />
         </div>
       </Provider>
     )
   }
 }
+
+export default withRoot(Page)

@@ -6,9 +6,7 @@ const User = require('./model')
 
 module.exports = function configure () {
   /* Battle.net */
-  const callbackURL = BLIZZARD_CALLBACK_URL
-    ? BLIZZARD_CALLBACK_URL
-    : `${PROTOCOL}://${HOST}:${PORT}/auth/bnet/callback`
+  const callbackURL = BLIZZARD_CALLBACK_URL || `${PROTOCOL}://${HOST}:${PORT}/auth/bnet/callback`
 
   passport.use(new BnetStrategy({
     clientID: BLIZZARD_KEY,

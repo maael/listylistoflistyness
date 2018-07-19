@@ -1,4 +1,4 @@
-import { action, observable, computed } from 'mobx'
+import { action, observable } from 'mobx'
 import axios from 'axios'
 
 export default class SettingsStore {
@@ -7,17 +7,19 @@ export default class SettingsStore {
 
   endpoint = '/api/llol/user/settings'
 
+  @action.bound
   set (field, data) {
     axios.patch(this.endpoint, { [field]: data })
       .then(({ status, data }) => {
         if (status === 200) {
-          this.settings = settings
+          this.settings = data
           this.loaded = true
         }
       })
       .catch(console.error)
   }
 
+  @action.bound
   load () {
     axios.get(this.endpoint)
       .then(({ status, data }) => {

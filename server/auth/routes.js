@@ -29,7 +29,7 @@ router.post('/login',
 )
 
 router.post('/register', (req, res) => {
-  User.register(new User({ username : req.body.username }), req.body.password, (err, user) => {
+  User.register(new User({ username: req.body.username }), req.body.password, (err, user) => {
     if (err) return res.status(500).json({ user, err: err.message })
 
     passport.authenticate('local')(req, res, () => {

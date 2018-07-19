@@ -1,3 +1,4 @@
+import React from 'react'
 import { Provider } from 'mobx-react'
 import { initStore } from '../app/stores'
 

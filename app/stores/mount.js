@@ -44,6 +44,7 @@ export default class MountStore {
     return this.mounts.map(({ name, slug, icon }) => ({ value: slug, label: name, src: iconFormatter(icon) }))
   }
 
+  @observable
   @computed get filtered () {
     return this.mounts.reduce((result, item) => {
       if (!item.name.toLowerCase().includes(this.activeFilter.search.toLowerCase())) return result

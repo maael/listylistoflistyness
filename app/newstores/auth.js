@@ -1,67 +1,42 @@
-import { action, observable } from 'mobx'
+import { computed, observable } from 'mobx'
 import axios from 'axios'
 import Router from 'next/router'
+import { withRoot, named } from './decorators'
 
+@withRoot
+@named
 export default class AuthStore {
   @observable loaded = false
   @observable token
-  @observable user
+  @observable user = { id: '5ad46905d81b6090b43354ef' }
 
   endpoint = '/auth/'
-
-  constructor (rootStore, isServer) {
-    if (!isServer) this.prepare()
-    this.rootStore = rootStore
-  }
-
-  prepare = () => {
-    this.load()
-    if (this.token) {
-      this.rootStore.characterStore.load()
-      this.rootStore.trackedStore.load()
-      this.rootStore.characterTrackedStore.load()
-      this.rootStore.settingsStore.load()
-    }
-  }
 
   save ({ token, user } = {}) {
     if (token) this.token = token
     if (user) this.user = user
-    localStorage.setItem('token', this.token)
-    localStorage.setItem('user', JSON.stringify(this.user))
+    this.loaded = true
   }
 
   reset () {
     this.token = undefined
     this.user = undefined
-    localStorage.removeItem('token')
-    localStorage.removeItem('user')
   }
 
-  load () {
-    this.token = localStorage.getItem('token')
-    this.user = localStorage.getItem('user') && JSON.parse(localStorage.getItem('user'))
-    this.refreshUser()
-  }
-
-  refreshUser () {
+  refresh () {
     axios.get(`${this.endpoint}refresh/`)
       .then(({ status, data }) => {
         if (status === 200) {
-          this.user = data
-          this.save()
+          this.save({ user: data })
         }
       })
   }
 
-  @action.bound
   login (username, password, redirect = false) {
     axios.post(`${this.endpoint}login`, { username, password })
       .then(({ status, data }) => {
         if (status === 200) {
           this.save(data)
-          this.rootStore.characterStore.load()
-          this.loaded = true
           if (redirect) Router.push('/')
         } else {
 
@@ -69,13 +44,11 @@ export default class AuthStore {
       }, console.error)
   }
 
-  @action.bound
   register (username, password, redirect = false) {
     axios.post(`${this.endpoint}register`, { username, password })
       .then(({ status, data }) => {
         if (status === 200) {
           this.save(data)
-          this.loaded = true
           if (redirect) Router.push('/')
         } else {
 
@@ -83,17 +56,6 @@ export default class AuthStore {
       }, console.error)
   }
 
-  @action.bound
-  revoke (battlenetId) {
-    axios.delete(`${this.endpoint}revoke/${this.user._id}/${battlenetId}`)
-      .then(({ status, data }) => {
-        if (status === 200) {
-          this.save(data)
-        }
-      }, console.error)
-  }
-
-  @action.bound
   logout () {
     axios.get(`${this.endpoint}logout`)
       .then(({ status }) => {
@@ -102,6 +64,24 @@ export default class AuthStore {
           this.reset()
         } else {
 
+        }
+      }, console.error)
+  }
+
+  registerBnet () {
+    console.log('registering')
+    window.location = 'http://google.com'
+  }
+
+  refreshBnet () {
+
+  }
+
+  revokeBnet (battlenetId) {
+    axios.delete(`${this.endpoint}revoke/${this.user._id}/${battlenetId}`)
+      .then(({ status, data }) => {
+        if (status === 200) {
+          this.save(data)
         }
       }, console.error)
   }

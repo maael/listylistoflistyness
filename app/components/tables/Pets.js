@@ -120,8 +120,8 @@ class PetsTable extends React.Component {
           <Table className='pet-table' />
           <TableHeaderRow showSortingControls />
           <Toolbar />
-          <CollectedTogglePlugin onClick={this.filterCollected}/>
-          <TrackedTogglePlugin onClick={this.filterTracked}/>
+          <CollectedTogglePlugin onClick={this.filterCollected} />
+          <TrackedTogglePlugin onClick={this.filterTracked} />
           <SearchPanel />
           <PagingPanel />
         </Grid>

@@ -1,5 +1,4 @@
 const { BLIZ_CACHE_MAX_AGE, DEBUG_SERVER_CACHE, BLIZZARD_KEY } = require('dotenv-extended').load()
-const axios = require('axios')
 const { setupCache } = require('axios-cache-adapter')
 const bliz = require('blizzard.js')
 const handleError = require('./handleError')

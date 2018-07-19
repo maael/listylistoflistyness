@@ -4,8 +4,9 @@ import IconButton from 'material-ui/IconButton'
 import StarBorderIcon from '@material-ui/icons/StarBorder'
 import StarIcon from '@material-ui/icons/Star'
 
-export default function createProvider (type, store) {
-  const TrackedFormatter = ({ value, row }) => {
+export default function createProvider (type, store, tracked = []) {
+  const TrackedFormatter = ({ row }) => {
+    const value = tracked.some(({ id }) => id === row.id)
     return <IconButton onClick={() => { store.track(type, row, !value) }}>{value ? <StarIcon /> : <StarBorderIcon />}</IconButton>
   }
 

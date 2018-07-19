@@ -1,28 +1,28 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import { MuiThemeProvider } from 'material-ui/styles';
-import CssBaseline from 'material-ui/CssBaseline';
-import getPageContext from './getPageContext';
+import React from 'react'
+import PropTypes from 'prop-types'
+import { MuiThemeProvider } from 'material-ui/styles'
+import CssBaseline from 'material-ui/CssBaseline'
+import getPageContext from './getPageContext'
 
-function withRoot(Component) {
+function withRoot (Component) {
   class WithRoot extends React.Component {
-    constructor(props, context) {
-      super(props, context);
+    constructor (props, context) {
+      super(props, context)
 
-      this.pageContext = this.props.pageContext || getPageContext();
+      this.pageContext = this.props.pageContext || getPageContext()
     }
 
-    componentDidMount() {
+    componentDidMount () {
       // Remove the server-side injected CSS.
-      const jssStyles = document.querySelector('#jss-server-side');
+      const jssStyles = document.querySelector('#jss-server-side')
       if (jssStyles && jssStyles.parentNode) {
-        jssStyles.parentNode.removeChild(jssStyles);
+        jssStyles.parentNode.removeChild(jssStyles)
       }
     }
 
     pageContext = null;
 
-    render() {
+    render () {
       // MuiThemeProvider makes the theme available down the React tree thanks to React context.
       return (
         <MuiThemeProvider
@@ -33,23 +33,23 @@ function withRoot(Component) {
           <CssBaseline />
           <Component {...this.props} />
         </MuiThemeProvider>
-      );
+      )
     }
   }
 
   WithRoot.propTypes = {
-    pageContext: PropTypes.object,
-  };
+    pageContext: PropTypes.object
+  }
 
   WithRoot.getInitialProps = ctx => {
     if (Component.getInitialProps) {
-      return Component.getInitialProps(ctx);
+      return Component.getInitialProps(ctx)
     }
 
-    return {};
-  };
+    return {}
+  }
 
-  return WithRoot;
+  return WithRoot
 }
 
-export default withRoot;
+export default withRoot

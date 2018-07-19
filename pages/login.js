@@ -1,3 +1,4 @@
+import React from 'react'
 import CssBaseline from 'material-ui/CssBaseline'
 import { Provider } from 'mobx-react'
 import { initStore } from '../app/stores'
@@ -27,7 +28,7 @@ class Page extends React.Component {
         <div>
           <CssBaseline />
           <HeaderBar />
-          <AuthBlock />
+          <AuthBlock redirect />
         </div>
       </Provider>
     )

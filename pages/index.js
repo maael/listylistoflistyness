@@ -1,3 +1,4 @@
+import React from 'react'
 import CssBaseline from 'material-ui/CssBaseline'
 import { Provider } from 'mobx-react'
 import { initStore } from '../app/stores'

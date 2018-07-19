@@ -28,7 +28,7 @@ class MemoryStore {
   }
 
   async clear () {
-    return // this.redis.flushdb()
+    // this.redis.flushdb()
   }
 
   async length () {

@@ -4,7 +4,6 @@ import Typography from 'material-ui/Typography'
 import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown'
 import ArrowDropUpIcon from '@material-ui/icons/ArrowDropUp'
 import ClearIcon from '@material-ui/icons/Clear'
-import CancelIcon from '@material-ui/icons/Cancel'
 import Option from './Option'
 
 export default function SelectWrapped (props) {
@@ -19,26 +18,7 @@ export default function SelectWrapped (props) {
       }}
       clearRenderer={() => <ClearIcon />}
       valueComponent={valueProps => {
-        const { value, children, onRemove } = valueProps
-
-        const onDelete = event => {
-          event.preventDefault()
-          event.stopPropagation()
-          onRemove(value)
-        }
-
-        if (onRemove) {
-          return (
-            <Chip
-              tabIndex={-1}
-              label={children}
-              className={classes.chip}
-              deleteIcon={<CancelIcon onTouchEnd={onDelete} />}
-              onDelete={onDelete}
-            />
-          )
-        }
-
+        const { children } = valueProps
         return <div className='Select-value'>{children}</div>
       }}
       {...other}

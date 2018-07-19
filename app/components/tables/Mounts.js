@@ -1,5 +1,5 @@
 import React from 'react'
-import { toJS, reaction } from 'mobx'
+import { toJS } from 'mobx'
 import { inject, observer } from 'mobx-react'
 import Paper from 'material-ui/Paper'
 import {
@@ -83,7 +83,7 @@ class MountsTable extends React.Component {
 
   render () {
     const { columns, iconColumns, idLinkColumns, collectedColumns, trackedColumns, defaultSorting, sortingStateColumnExtensions, value } = this.state
-    const { mountStore, trackedStore, trackable } = this.props
+    const { mountStore, trackedStore } = this.props
     const TrackedProvider = createTrackedProvider('mount', trackedStore)
     return (
       <Paper className='mount-table'>
@@ -116,8 +116,8 @@ class MountsTable extends React.Component {
           <Table className='mount-table' />
           <TableHeaderRow showSortingControls />
           <Toolbar />
-          <CollectedTogglePlugin onClick={this.filterCollected}/>
-          <TrackedTogglePlugin onClick={this.filterTracked}/>
+          <CollectedTogglePlugin onClick={this.filterCollected} />
+          <TrackedTogglePlugin onClick={this.filterTracked} />
           <SearchPanel />
           <PagingPanel />
         </Grid>

@@ -10,7 +10,7 @@ router.get('/', (req, res) => {
 })
 
 router.get('/:type/:user', (req, res) => {
-  const { user, type } = req.params
+  const { type, user } = req.params
   Model.find({ user, type }, (err, items) => {
     if (err) return res.status(500).send(err)
     res.send(items)
@@ -38,6 +38,7 @@ router.post('/:type', (req, res) => {
   const { type } = req.params
   const { _id: user } = req.user
   const newItem = new Model({ type, details, user })
+  if (details.character) newItem.character = details.character
   newItem.save((err, item) => {
     if (err) return res.status(500).send(err)
     res.send(item)
